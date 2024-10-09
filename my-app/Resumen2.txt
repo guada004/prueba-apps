@@ -1,0 +1,187 @@
+1. React
+React es una biblioteca de JavaScript para construir interfaces de usuario. A continuación se cubren algunos de los aspectos más importantes para tu prueba.
+
+Componentes
+React organiza la UI en componentes, que pueden ser clases o funciones. Los componentes funcionales son más comunes hoy en día gracias a los hooks (como useEffect).
+
+js
+Copiar código
+function MiComponente() {
+  return <h1>Hola Mundo</h1>;
+}
+Hooks
+Los hooks son funciones especiales de React que permiten usar estado y otras características en componentes funcionales.
+
+useState
+Es el hook que te permite añadir estado local a un componente funcional.
+
+js
+Copiar código
+import { useState } from 'react';
+
+function Contador() {
+  const [contador, setContador] = useState(0);
+  
+  return (
+    <div>
+      <p>Has hecho click {contador} veces</p>
+      <button onClick={() => setContador(contador + 1)}>
+        Incrementar
+      </button>
+    </div>
+  );
+}
+useEffect
+Este hook permite realizar efectos secundarios en los componentes, como solicitudes HTTP o interactuar con APIs externas. Se ejecuta después de que el componente se haya renderizado.
+
+Sin dependencias: El efecto se ejecuta después de cada render.
+Con un array vacío ([]): El efecto se ejecuta solo una vez, similar a componentDidMount.
+Con dependencias: Se ejecuta cada vez que las dependencias cambian.
+Ejemplo básico:
+
+js
+Copiar código
+import { useEffect, useState } from 'react';
+
+function MiComponente() {
+  const [datos, setDatos] = useState([]);
+
+  useEffect(() => {
+    fetch('https://api.example.com/datos')
+      .then(respuesta => respuesta.json())
+      .then(data => setDatos(data));
+  }, []); // Se ejecuta solo una vez al montar
+
+  return <div>{JSON.stringify(datos)}</div>;
+}
+2. Next.js
+Next.js es un framework basado en React que proporciona características adicionales para aplicaciones de lado del servidor (SSR) y generación de sitios estáticos (SSG).
+
+Pre-renderizado
+Next.js tiene dos formas principales de pre-renderizar las páginas:
+
+Static Generation (SSG): Genera HTML estático en el momento de la construcción.
+Server-Side Rendering (SSR): Genera HTML en cada solicitud.
+useClient
+En Next.js, cuando usas pre-renderizado, algunas partes del código deben ejecutarse solo del lado del cliente. Para esto, se puede usar useClient, que asegura que el código se ejecutará únicamente en el cliente.
+
+getServerSideProps y getStaticProps
+Estos son métodos especiales que Next.js ofrece para obtener datos en el servidor. Puedes usarlos con useEffect cuando necesites trabajar con datos dinámicos.
+
+js
+Copiar código
+export async function getServerSideProps() {
+  const res = await fetch('https://api.example.com/data');
+  const data = await res.json();
+
+  return {
+    props: {
+      data
+    }
+  };
+}
+3. map en React
+El método map se usa para iterar sobre listas y renderizar elementos de manera dinámica.
+
+js
+Copiar código
+const lista = ['Elemento 1', 'Elemento 2', 'Elemento 3'];
+
+function ListaDeElementos() {
+  return (
+    <ul>
+      {lista.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
+  );
+}
+Es importante usar una key única cuando estás iterando elementos, para que React pueda optimizar la renderización.
+
+4. Sockets
+Los WebSockets permiten una comunicación bidireccional entre el cliente y el servidor en tiempo real.
+
+Para implementar sockets en una aplicación de React o Next.js, puedes usar bibliotecas como socket.io.
+
+Aquí tienes un ejemplo de cómo conectar y recibir mensajes de un servidor WebSocket en React usando useEffect:
+
+js
+Copiar código
+import { useEffect, useState } from 'react';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3000');
+
+function WebSocketComponent() {
+  const [mensaje, setMensaje] = useState('');
+
+  useEffect(() => {
+    socket.on('mensaje', (msg) => {
+      setMensaje(msg);
+    });
+
+    // Limpieza del socket cuando el componente se desmonta
+    return () => socket.off('mensaje');
+  }, []);
+
+  return <div>{mensaje}</div>;
+}
+En este ejemplo, el socket se conecta al servidor y escucha el evento 'mensaje'. Cada vez que se recibe un mensaje, se actualiza el estado del componente y se renderiza el nuevo mensaje.
+
+------------
+1. Crear una aplicación de React
+Para crear una aplicación de React, usa el siguiente comando con Create React App:
+
+bash
+Copiar código
+npx create-react-app mi-app
+cd mi-app
+npm start
+Esto crea una nueva aplicación de React llamada mi-app y la ejecuta en http://localhost:3000.
+
+2. Crear una aplicación de Next.js
+Para empezar con Next.js, puedes usar este comando:
+
+bash
+Copiar código
+npx create-next-app mi-app-next
+cd mi-app-next
+npm run dev
+Esto crea una nueva aplicación de Next.js y la ejecuta en modo de desarrollo en http://localhost:3000.
+
+3. Instalar dependencias adicionales
+Socket.io para React y Next.js
+Si estás trabajando con sockets, necesitarás instalar socket.io-client:
+
+bash
+Copiar código
+npm install socket.io-client
+Si también estás configurando un servidor WebSocket con Socket.io:
+
+bash
+Copiar código
+npm install socket.io
+4. Construir y desplegar en producción
+Una vez que hayas terminado de desarrollar, puedes construir la aplicación para producción con los siguientes comandos:
+
+React (Create React App):
+bash
+Copiar código
+npm run build
+npm install -g serve
+serve -s build
+Esto crea una versión optimizada de la aplicación React y la sirve en un servidor de producción.
+
+Next.js:
+bash
+Copiar código
+npm run build
+npm start
+Este comando genera los archivos optimizados y ejecuta la aplicación en modo de producción.
+
+5. Otros comandos útiles en Next.js
+Compilación estática (SSG):
+
+bash
+Copiar código
+npm run build && npm run export

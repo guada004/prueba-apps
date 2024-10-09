@@ -1,0 +1,78 @@
+Paso 2: Backend - Crear el endpoint en pages/api/deportistas.js
+En Next.js, los endpoints de la API se crean en la carpeta pages/api. Vamos a crear un archivo que simule la obtención de datos de deportistas.
+
+javascript
+Copiar código
+// pages/api/deportistas.js
+
+// Aquí definimos un handler para nuestra API que retorna una lista de deportistas.
+// Este será nuestro backend simple, que sirve los datos cuando se hace un request GET.
+export default function handler(req, res) {
+  const deportistas = [
+    { id: 1, name: 'Lionel Messi', foto: 'https://link-to-messi-photo' },
+    { id: 2, name: 'Serena Williams', foto: 'https://link-to-serena-photo' },
+    { id: 3, name: 'Usain Bolt', foto: 'https://link-to-bolt-photo' },
+  ];
+  
+  // Retornamos los deportistas como un JSON.
+  res.status(200).json(deportistas);
+}
+
+Paso 3: Frontend - Obtener los datos con fetch en pages/index.js
+En la página principal (index.js), utilizamos useEffect para hacer una llamada al backend, y luego almacenamos los datos en el estado local.
+
+javascript
+Copiar código
+// pages/index.js
+import { useState, useEffect } from 'react';
+import Deportista from '../components/Deportista';
+
+export default function Home() {
+  // Definimos un estado para guardar la lista de deportistas.
+  const [deportistas, setDeportistas] = useState([]);
+
+  // El hook useEffect se ejecuta cuando el componente se monta.
+  // Aquí es donde obtenemos los datos de la API utilizando fetch.
+  useEffect(() => {
+    // Hacemos una petición GET a nuestra API para obtener los deportistas.
+    fetch('/api/deportistas')
+      .then((response) => response.json()) // Convertimos la respuesta a JSON.
+      .then((data) => {
+        // Guardamos los datos en el estado.
+        setDeportistas(data);
+      });
+  }, []); // El array vacío asegura que esto solo se ejecute una vez al montar el componente.
+
+  return (
+    <div>
+      <h1>Lista de Deportistas</h1>
+      {/* Iteramos sobre la lista de deportistas y renderizamos un componente Deportista por cada uno. */}
+      {deportistas.map((deportista) => (
+        <Deportista key={deportista.id} name={deportista.name} foto={deportista.foto} />
+      ))}
+    </div>
+  );
+}
+Paso 4: Componente Deportista en components/Deportista.js
+Este es un componente simple que recibe las props del deportista y las muestra.
+
+javascript
+Copiar código
+// components/Deportista.js
+
+// Este componente es funcional y recibe las propiedades (props) name y foto.
+export default function Deportista({ name, foto }) {
+  return (
+    <div>
+      {/* Mostramos el nombre del deportista */}
+      <p>{name}</p>
+      {/* Mostramos la imagen del deportista */}
+      <img src={foto} alt={`Foto de ${name}`} width="100" height="100" />
+    </div>
+  );
+}
+Comentarios:
+Backend (api/deportistas.js): Creamos un endpoint que devuelve un array de objetos, cada uno representando un deportista con id, name y foto.
+Frontend (useEffect y fetch): Utilizamos el hook useEffect para obtener los datos del backend cuando el componente se monta. Usamos fetch para hacer la solicitud y almacenamos los datos en el estado con useState.
+Componente Deportista: Creamos un componente que toma las propiedades (name y foto) y las renderiza en la página.
+Con esto tienes un proyecto básico de Next.js que sigue la estructura que mostraste en la pizarra, con comentarios detallados en cada sección. Puedes ejecutar tu aplicación con npm run dev para verla en acción.
